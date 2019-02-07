@@ -42,7 +42,8 @@ public class Block : PangObject
 
     public void Explosion()
     {
-
+        StopCoroutine("ExploCo");
+        StartCoroutine("ExploCo");
     }
 
     public void SetPosition()
@@ -58,16 +59,18 @@ public class Block : PangObject
         mData.PosY = y;
     }
 
-    public void BlockSetActiveTrue() // setActive = true;
+    public void On() // setActive = true;
     {
         gameObject.SetActive(true);
         mSetActive = true;
+        mState = State.IDLE;
     }
 
-    public void BlockSetActiveFalse() // 맞췄을 때 setactive = false
+    public void Off() // 맞췄을 때 setactive = false
     {
         gameObject.SetActive(false);
         mSetActive = false;
+        mState = State.EMPTY;
     }
 
     public void SetRandomSpriteRenderer() // 맞췄을 때 스프라이트 set
@@ -100,6 +103,19 @@ public class Block : PangObject
         while (Time.time - startTime <= duration)
         {
             _LocalPosition = Vector2.Lerp(startPos, endPos, (Time.time - startTime) / duration);
+            yield return null;
+        }
+    }
+
+    IEnumerator ExploCo()
+    {
+        float startTime = Time.time;
+        float duration = .2f;
+        mState = State.EXPLO;
+
+        while(Time.time - startTime <= duration)
+        {
+            // 폭발 파티클 실행..
             yield return null;
         }
     }

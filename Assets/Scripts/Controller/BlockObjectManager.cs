@@ -59,16 +59,25 @@ public class BlockObjectManager : MonoBehaviour
             block.SetData(go.transform.localPosition.x, go.transform.localPosition.y); // 위치값 저장
 
             Debug.Log(i + "번째 x값 = " + blockList[i]._X + " " + i + " 번째 y 값 = " + blockList[i]._Y);
-        }
-        
-        // 랜덤 스프라이트 생성..
 
+            block.Off();
+        }
     }
+    public void OnCreateBlock()
+    {
+        for(int i = 0; i < blockNum; i++)
+        {
+            blockList[i].On();
+            // 랜덤 스프라이트 생성..
+        }
+    }
+
 
     // 맞췄을 때 setActive = false (폭발)
     public void Explosion(int _exploNum)
     {
-        blockList[_exploNum - 1].BlockSetActiveFalse();
+        blockList[_exploNum - 1].Explosion();
+        blockList[_exploNum - 1].Off();
 
         Temp = blockList[_exploNum - 1]; // 맨끝으로 오브젝트 옮기기 -->> 임시 Temp 저장
         Temp.SetPosition(Values.EndX, Values.firstY); // 코루틴 사용
@@ -98,12 +107,11 @@ public class BlockObjectManager : MonoBehaviour
 
     public void CreateEndBlock() // 이동한 후 맨 끝자리 블록 true 하고 값 설정
     {
-        blockList[blockNum - 1].BlockSetActiveTrue();
         StopCoroutine("CreateEndCo");
         StartCoroutine("CreateEndCo");
     }
-    // **** Private ****
 
+    // **** Private ****
     IEnumerator ResetBlock() // 스테이지 끝난 다음 블록 재조정
     {
 
@@ -116,15 +124,11 @@ public class BlockObjectManager : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator MoveCo()
-    {
-
-        yield return null;
-    }
-
     IEnumerator CreateEndCo()
     {
-        if(blanceNum > 0)
+        blockList[blockNum - 1].On();
+
+        if (blanceNum > 0)
         {
             blanceNum--;
             
